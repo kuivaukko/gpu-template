@@ -1,0 +1,32 @@
+# ---------------------------------------------------------------------------
+# docker-compose.yml — Local development & production deployment
+# ---------------------------------------------------------------------------
+# Usage:
+#   GPU machine:  docker compose up --build
+#   CPU machine:  docker compose up --build   (same command — see notes below)
+#
+# The `deploy.resources.reservations.devices` block requests GPU access.
+# On a machine WITHOUT a GPU or without nvidia-container-toolkit the
+# container will still start — Docker Compose simply ignores the
+# reservation if the driver is missing.  PyTorch will then fall back to
+# CPU automatically.
+# ---------------------------------------------------------------------------
+
+services:
+  gpu-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    # Restart on crash, but not if we explicitly stop it (saves GPU costs).
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

@@ -1,0 +1,9 @@
+# Core web framework
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+python-dotenv==1.1.0
+pydantic==2.11.3
+
+# ML / inference
+torch==2.6.0
+sentence-transformers==4.1.0
